@@ -1,0 +1,47 @@
+- name: Setup & start the postgres service
+
+  hosts: all
+  remote_user: agent
+
+  vars:
+    postgres_directory: /home/agent/postgres
+    data_directory: /home/agent/postgres/data
+
+  tasks:
+    - name: Create the postgres directory
+      ansible.builtin.file:
+        path: '{{ postgres_directory }}'
+        state: directory
+        mode: 0700
+
+    - name: Create the data directory
+      ansible.builtin.file:
+        path: '{{ data_directory }}'
+        state: directory
+        mode: 0700
+
+    - name: Create the db network
+      containers.podman.podman_network:
+        name: db
+        state: present
+
+    - name: Create the postgres_password secret
+      containers.podman.podman_secret:
+        name: postgres_password
+        state: present
+        data: '{{ postgres_password }}'
+        force: true
+
+    - name: Copy the Postgres service file
+      ansible.builtin.template:
+        src: postgres.service.j2
+        dest: '/home/agent/.config/systemd/user/postgres.service'
+        mode: 0400
+
+    - name: Start & enable the Postgres service
+      ansible.builtin.systemd:
+        daemon_reload: true
+        enabled: true
+        name: postgres
+        scope: user
+        state: restarted
