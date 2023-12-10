@@ -32,6 +32,13 @@
         data: '{{ postgres_password }}'
         force: true
 
+    - name: Create the postgres_connection secret
+      containers.podman.podman_secret:
+        name: postgres_connection
+        state: present
+        data: 'postgres://postgres:{{ postgres_password }}@postgres'
+        force: true
+
     - name: Copy the Postgres service file
       ansible.builtin.template:
         src: postgres.service.j2
