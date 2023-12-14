@@ -20,6 +20,24 @@
         state: directory
         mode: 0700
 
+    - name: Create the bin directory
+      ansible.builtin.file:
+        path: '{{ postgres_directory }}/bin'
+        state: directory
+        mode: 0700
+
+    - name: Copy psql-vm
+      ansible.builtin.template:
+        src: psql-vm.j2
+        dest: '{{ postgres_directory }}/bin/psql-vm'
+        mode: 0500
+
+    - name: Copy psql-vm-exec
+      ansible.builtin.template:
+        src: psql-vm-exec.j2
+        dest: '{{ postgres_directory }}/bin/psql-vm-exec'
+        mode: 0500
+
     - name: Create the db network
       containers.podman.podman_network:
         name: db

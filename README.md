@@ -13,7 +13,7 @@ Create the file `inventory.yaml`.
 ```
 ungrouped:
   hosts:
-    vm:
+    vm01:
       ansible_host: vm01
 ```
 

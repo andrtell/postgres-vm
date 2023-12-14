@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+HOST=vm01
+
+ssh -t agent@$HOST '$HOME/postgres/bin/psql-vm'
